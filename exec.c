@@ -99,6 +99,17 @@ exec(char *path, char **argv)
   curproc->sz = sz;
   curproc->tf->eip = elf.entry;  // main
   curproc->tf->esp = sp;
+  curproc->nested = 0;
+
+
+  // 2.1.2 singals realted resources
+  // resetting all signal handlers to default
+  for(int i=2; i<32; i++){
+    curproc->sig_handlers[i].sa_handler = SIG_DFL;
+    curproc->sig_handlers[i].sigmask = 0;
+  }
+ 
+
   switchuvm(curproc);
   freevm(oldpgdir);
   return 0;
